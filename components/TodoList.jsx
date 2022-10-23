@@ -10,8 +10,8 @@ import {
     import useAuth from "../hooks/useAuth";
     import { collection, onSnapshot, query, where } from "firebase/firestore";
     import { db } from "../firebase";
-    import { FaToggleOff, FaToggleOn, FaTrash } from "react-icons/fa";
-    import { deleteTodo, toggleTodoStatus } from "../api/todo";
+    import { FaToggleOff, FaToggleOn, FaTrash, FaEdit } from "react-icons/fa";
+    import { deleteTodo, toggleTodoStatus, editTodo } from "../api/todo";
     const TodoList = () => {
     const [todos, setTodos] = React.useState([]);
     const {  user } = useAuth();
@@ -39,6 +39,11 @@ import {
     toast({ title: "Todo deleted successfully", status: "success" });
     }
     };
+
+    const handleTodoEdit = async (id) => {
+        editTodo(id);
+    };
+
     const handleToggle = async (id, status) => {
     const newStatus = status == "completed" ? "pending" : "completed";
     await toggleTodoStatus({ docId: id, status: newStatus });
@@ -59,7 +64,7 @@ import {
     transition="0.2s"
     _hover={{ boxShadow: "sm" }}
     >
-    <Heading as="h3" fontSize={"xl"}>
+    <Heading as="h3" fontSize={{ base: '20px', md: '25px', lg: '30px' }}>
     {todo.title}{" "}
     <Badge
     color="red.500"
@@ -74,6 +79,20 @@ import {
     onClick={() => handleTodoDelete(todo.id)}
     >
     <FaTrash />
+    </Badge>
+    <Badge
+    color="red.500"
+    bg="inherit"
+    transition={"0.2s"}
+    _hover={{
+    bg: "inherit",
+    transform: "scale(1.2)",
+    }}
+    float="right"
+    size="xs"
+    onClick={() => handleTodoEdit(todo.id)}
+    >
+    <FaEdit />
     </Badge>
     <Badge
     color={todo.status == "pending" ? "gray.500" : "green.500"}
@@ -97,7 +116,7 @@ import {
     {todo.status}
     </Badge>
     </Heading>
-    <Text>{todo.description}</Text>
+    <Text fontSize={{ base: '18px', md: '22px', lg: '27px' }}>{todo.description}</Text>
     </Box>
     ))}
     </SimpleGrid>

@@ -8,50 +8,47 @@ import {
     } from "@chakra-ui/react";
     import React, { useEffect } from "react";
     import useAuth from "../hooks/useAuth";
-    import { collection, onSnapshot, query, where } from "firebase/firestore";
+    import { collection, onSnapshot, query, where} from "firebase/firestore";
     import { db } from "../firebase";
-    import { FaToggleOff, FaToggleOn, FaTrash } from "react-icons/fa";
-    import { deleteDate, toggleDateStatus } from "../api/date";
-    const DateList = () => {
-    const [date, setDate] = React.useState([]);
+    import { FaTrash, FaEdit } from "react-icons/fa";
+    import { deleteEvent, editEvent} from "../api/event";
+    const EventList = () => {
+    const [event, setEvent] = React.useState([]);
     const {  user } = useAuth();
     const toast = useToast();
     const refreshData = () => {
     if (!user) {
-    setDate([]);
+    setEvent([]);
     return;
     }
-    const q = query(collection(db, "date"), where("user", "==", user.uid));
+    const q = query(collection(db, "event"), where("user", "==", user.uid));
     onSnapshot(q, (querySnapchot) => {
     let ar = [];
     querySnapchot.docs.forEach((doc) => {
     ar.push({ id: doc.id, ...doc.data() });
     });
-    setDate(ar);
+    setEvent(ar);
     });
     };
     useEffect(() => {
     refreshData();
     }, [user]);
-    const handleDateDelete = async (id) => {
+    const handleEventDelete = async (id) => {
     if (confirm("Are you sure you wanna delete this deadline?")) {
-    deleteDate(id);
+    deleteEvent(id);
     toast({ title: "Deadline deleted successfully", status: "success" });
     }
     };
-    const handleToggle = async (id, status) => {
-    const newStatus = status == "completed" ? "pending" : "completed";
-    await toggleDateStatus({ docId: id, status: newStatus });
-    toast({
-    title: `Date marked ${newStatus}`,
-    status: newStatus == "completed" ? "success" : "warning",
-    });
-    };
+
+    const handleEventEdit = async (id) => {
+            editEvent(id);
+        };
+   
     return (
     <Box mt={5}>
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
-    {date &&
-    date.map((date) => (
+    {event &&
+    event.map((event) => (
     <Box
     p={3}
     boxShadow="2xl"
@@ -59,8 +56,8 @@ import {
     transition="0.2s"
     _hover={{ boxShadow: "sm" }}
     >
-    <Heading as="h3" fontSize={"xl"}>
-    {date.project}{" "}
+    <Heading as="h3" fontSize={{ base: '20px', md: '25px', lg: '30px' }}>
+    {event.title}{" "}
     <Badge
     color="red.500"
     bg="inherit"
@@ -71,12 +68,13 @@ import {
     }}
     float="right"
     size="xs"
-    onClick={() => handleDateDelete(date.id)}
+    onClick={() => handleEventDelete(event.id)}
     >
     <FaTrash />
     </Badge>
+
     <Badge
-    color={date.status == "pending" ? "gray.500" : "green.500"}
+    color="red.500"
     bg="inherit"
     transition={"0.2s"}
     _hover={{
@@ -85,23 +83,17 @@ import {
     }}
     float="right"
     size="xs"
-    onClick={() => handleToggle(date.id, date.status)}
+    onClick={() => handleEventEdit(event.id)}
     >
-    {date.status == "pending" ? <FaToggleOff /> : <FaToggleOn />}
+    <FaEdit />
     </Badge>
-    <Badge
-    float="right"
-    opacity="0.8"
-    bg={date.status == "pending" ? "yellow.500" : "green.500"}
-    >
-    {date.status}
-    </Badge>
+    
     </Heading>
-    <Text>{date.deadline}</Text>
+    <Text fontSize={{ base: '18px', md: '22px', lg: '27px' }}>{event.deadline}</Text>
     </Box>
     ))}
     </SimpleGrid>
     </Box>
     );
     };
-    export default DateList;
+    export default EventList;

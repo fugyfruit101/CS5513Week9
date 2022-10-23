@@ -5,6 +5,7 @@ addDoc,
 updateDoc,
 doc,
 deleteDoc,
+setDoc,
 } from "firebase/firestore";
 const addTodo = async ({ userId, title, description, status }) => {
 try {
@@ -35,4 +36,25 @@ await deleteDoc(todoRef);
 console.log(err);
 }
 };
-export { addTodo, toggleTodoStatus, deleteTodo };
+
+
+const editTodo = async (docId) => {
+    const docRef = doc(db, 'todo', docId);
+
+    const data = {
+        user: "userId",
+        title: "title",
+        description: "description",
+        status: true,
+      };
+
+    setDoc(docRef, data, {merge:true})
+    .then(docRef => {
+        console.log("Edit successful");
+    })
+    .catch(error => {
+        console.log("error")
+    })
+    };
+
+export { addTodo, toggleTodoStatus, deleteTodo, editTodo };
