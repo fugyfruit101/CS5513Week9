@@ -12,7 +12,7 @@ import {
     import { db } from "../firebase";
     import { FaTrash, FaEdit } from "react-icons/fa";
     import { deleteContact, editContact} from "../api/contact";
-    const contactList = () => {
+    const ContactList = () => {
     const [contact, setContact] = React.useState([]);
     const {  user } = useAuth();
     const toast = useToast();
@@ -96,4 +96,4 @@ import {
     </Box>
     );
     };
-    export default contactList;
+    export default ContactList;
