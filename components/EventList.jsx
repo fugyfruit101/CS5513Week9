@@ -50,6 +50,7 @@ import {
     {event &&
     event.map((event) => (
     <Box
+    key={event.id}
     p={3}
     boxShadow="2xl"
     shadow={"dark-lg"}

@@ -2,6 +2,7 @@ import {
     Badge,
     Box,
     Heading,
+    LinkBox,
     SimpleGrid,
     Text,
     useToast,
@@ -47,7 +48,8 @@ import {
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
     {contact &&
     contact.map((contact) => (
-    <Box
+    <Box 
+    key={contact.id}
     p={3}
     boxShadow="2xl"
     shadow={"dark-lg"}
